@@ -16,7 +16,7 @@ phase4.c
 #include <usyscall.h>
 #include "phase3_kernelInterfaces.h"
 
-// Function prototypes
+// Functions
 static int ClockDriver(void *);
 static int TermDriver(void *);
 static int TermReader(void *);
@@ -25,7 +25,7 @@ static void sleepReal(USLOSS_Sysargs *);
 static void termReadReal(USLOSS_Sysargs *);
 static void termWriteReal(USLOSS_Sysargs *);
 
-// Define constants
+// Constants
 #define TERM_UNITS 4  // Number of terminal units 
 
 // Data structures
@@ -42,7 +42,7 @@ typedef struct {
     int writer_mutex;  // Mutex for synchronizing multiple writers
     
     // Terminal input line buffers
-    char buffer[10][MAXLINE + 1];  // Add 1 for null terminator if needed
+    char buffer[10][MAXLINE + 1];   // might need to add 1 for null terminator if needed ??? 
     int head;                       // Index of next buffer to read
     int tail;                       // Index of next buffer to fill
     int chars_in_current_line;      // Number of characters in current line buffer
@@ -50,18 +50,15 @@ typedef struct {
 } Term_Info;
 
 // Global variables
-static int running;             // Indicates if drivers are running
-static Sleep_Process *sleep_queue = NULL; // List of sleeping processes
-static int clock_driver_pid;    // PID of the clock driver
-static int term_driver_pid[TERM_UNITS]; // PIDs of the terminal drivers
-static Term_Info term_info[TERM_UNITS]; // Information about each terminal
-static int clock_mailbox;       // Mailbox for synchronizing with the clock
-static int term_mailbox[TERM_UNITS]; // Mailboxes for synchronizing with terminals
+static int running;                         // Indicates if drivers are running
+static Sleep_Process *sleep_queue = NULL;   // List of sleeping processes
+static int clock_driver_pid;                // PID of the clock driver
+static int term_driver_pid[TERM_UNITS];     // PIDs of the terminal drivers
+static Term_Info term_info[TERM_UNITS];     // Information about each terminal
+static int clock_mailbox;                   // Mailbox for synchronizing with the clock
+static int term_mailbox[TERM_UNITS];        // Mailboxes for synchronizing with terminals
 
-/* 
- * phase4_init
- * Initialize phase 4 data structures and start device drivers
- */
+// Initialize phase 4 data structures and start device drivers
 void phase4_init(void) {
     int i, j;
     USLOSS_Console("phase4_init: started\n");
@@ -101,10 +98,7 @@ void phase4_init(void) {
     USLOSS_Console("phase4_init: done\n");
 }
 
-/* 
- * phase4_start_service_processes
- * Start the device driver processes
- */
+// Start the device driver processes
 void phase4_start_service_processes(void) {
     int i, pid;
     
@@ -127,11 +121,7 @@ void phase4_start_service_processes(void) {
     }
 }
 
-/* 
- * ClockDriver
- * Clock device driver process. Waits for clock interrupts and wakes up
- * processes that have finished sleeping.
- */
+// Clock device driver process. Waits for clock interrupts and wakes up processes that have finished sleeping.
 static int ClockDriver(void *arg) {
     int status;
     int current_time;
@@ -145,7 +135,7 @@ static int ClockDriver(void *arg) {
         // Wait for clock interrupt
         waitDevice(USLOSS_CLOCK_DEV, 0, &status);
         
-        // Check for processes that need to wake up
+        // Check for processes to wake up
         if (sleep_queue != NULL) {
             current_time = currentTime();
             
