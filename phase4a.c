@@ -2,6 +2,11 @@
 Authors: Raymon Lee, Estevan Pickett
 Course: CSC 452
 phase4.c
+
+***
+Adding work here to avoid merge conflicts
+***
+
  */
 
 #include <stdlib.h>
@@ -227,7 +232,24 @@ static void sleepReal(USLOSS_Sysargs *args) {
 
 // Terminal device driver process. Waits for terminal interrupts and handles input/output.
 static int TermDriver(void *arg) {
-
+    int unit = (int)(long)arg;
+    int status;
+    int result;
+    char ch;
+    int i;
+    
+    // Let parent know we running
+    MboxSend(term_mailbox[unit], NULL, 0);
+    
+    while (running) {
+        // Wait for terminal interrupt
+        waitDevice(USLOSS_TERM_DEV, unit, &status);
+        
+        // Check if we received input (biti 5)
+        if (USLOSS_TERM_STAT_RECV(status) == USLOSS_DEV_BUSY) {
+        }
+    }
+    return 0;
 }
 
 // Handler for TermRead system call
