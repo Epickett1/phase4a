@@ -132,9 +132,6 @@ static int ClockDriver(void *arg) {
     int current_time;
     Sleep_Process *proc, *prev, *next;
     
-    // Let parent know we're running
-    MboxSend(clock_mailbox, NULL, 0);
-    
     // Infinite loop handling clock interrupts
     while (running) {
         // Wait for clock interrupt
