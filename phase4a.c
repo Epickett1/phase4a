@@ -66,7 +66,6 @@ static int term_mailbox[TERM_UNITS];        // Mailboxes for synchronizing with 
 // Initialize phase 4 data structures and start device drivers
 void phase4_init(void) {
     int i, j;
-    USLOSS_Console("phase4_init: started\n");
     
     // Initialize terminal data structures
     for (i = 0; i < TERM_UNITS; i++) {
@@ -99,8 +98,6 @@ void phase4_init(void) {
     systemCallVec[SYS_TERMWRITE] = termWriteReal;
 
     running = 1;
-    
-    USLOSS_Console("phase4_init: done\n");
 }
 
 // Start the device driver processes
